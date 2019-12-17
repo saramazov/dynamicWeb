@@ -54,7 +54,8 @@ public class SqlBridge extends HttpServlet {
 			
 		}
 		
-		RequestDispatcher rd = request.getRequestDispatcher("/sqlview");
+		//RequestDispatcher rd = request.getRequestDispatcher("/sqlview");
+		RequestDispatcher rd = request.getRequestDispatcher("a.jsp");
 		rd.forward(request, response);
 		
 	}
