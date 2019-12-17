@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,7 +34,6 @@ public class SqlBridge extends HttpServlet {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet results = null;
-		String text = null;
 		//connessione al db(connFact)
 		try {
 			connection = ConnectionFactory.getConnection();
@@ -41,12 +41,13 @@ public class SqlBridge extends HttpServlet {
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 		            ResultSet.CONCUR_READ_ONLY);
 			//esecuzione query
-			results = statement.executeQuery("select * from province");
+			String query = request.getParameter("query");
+			results = statement.executeQuery(query);
 			Convertitore convertitore = 
 					ConvertitoreFactory.createConvertitore("html");
 			//conversione del resultset in table e invio al browser
 			response.getWriter().append(convertitore.converti(results));
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException | NamingException e) {
 			e.printStackTrace();
 			throw new ServletException(e);
 			
@@ -55,6 +56,12 @@ public class SqlBridge extends HttpServlet {
 		
 		response.getWriter().append("</body></html>");
 		
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
+		this.doGet(request, response);
 	}
 
 }
